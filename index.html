@@ -1,42 +1,37 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Watch Movie HD</title>
+
     <style>
-        body, html {
+        html, body {
             margin: 0;
             padding: 0;
             height: 100%;
+            background: #000;
             overflow: hidden;
-            background-color: #000;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
             color: #fff;
         }
 
         .container {
-            position: relative;
             width: 100%;
             height: 100%;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
         }
 
         .video-container {
-            width: 100%;
-            flex-grow: 1;
+            flex: 1;
             position: relative;
-            background-color: #000;
+            background: #000;
         }
 
         .video-container iframe {
             position: absolute;
-            top: 0;
-            left: 0;
+            inset: 0;
             width: 100%;
             height: 100%;
             border: 0;
@@ -45,32 +40,56 @@
 </head>
 <body>
 
-    <div class="container">
-        <div class="video-container">
-            <iframe id="videoPlayer"
-                    frameborder="0"
-                    referrerpolicy="origin"
-                    allowfullscreen>
-            </iframe>
-        </div>
+<div class="container">
+    <div class="video-container" id="playerArea">
+        <iframe id="videoPlayer"
+            allowfullscreen
+            referrerpolicy="origin">
+        </iframe>
     </div>
+</div>
 
-    <script>
-        // Tentukan movieId dari URL. Gunakan default '1022789' jika tidak ada di URL
-        const path = window.location.pathname;
-        const movieId = path.substring(path.lastIndexOf('/') + 1) || '1022789'; // Menggunakan ID default jika kosong
-        const iframe = document.getElementById('videoPlayer');
+<script>
+/* ======================
+   MOVIE ID HANDLING
+====================== */
+(function () {
+    const path = window.location.pathname;
+    let movieId = parseInt(path.substring(path.lastIndexOf('/') + 1), 10);
 
-        // Pastikan movieId valid dan atur src iframe
-        if (movieId && !isNaN(movieId)) {
-            const embedUrl = `https://vidsrc.net/embed/movie?tmdb=${movieId}`;
-            iframe.src = embedUrl;
-            console.log("Movie ID is valid, setting iframe source.");
-        } else {
-            console.error("ID film tidak valid, menggunakan ID default.");
-            iframe.src = "https://vidsrc.net/embed/movie?tmdb=1022789"; // Gunakan URL default
-        }
-    </script>
-<script src="https://tuckerclassesjackal.com/6a/04/bc/6a04bc595e968588176ddfcbf5ada03c.js"></script>
+    if (!movieId || isNaN(movieId)) {
+        movieId = 1022789;
+    }
+
+    const iframe = document.getElementById("videoPlayer");
+    iframe.src = `https://vidsrc.net/embed/movie?tmdb=${movieId}`;
+})();
+</script>
+
+<script>
+/* ======================
+   ADSTERRA SAFE POPUNDER
+====================== */
+(function () {
+    let adLoaded = false;
+
+    function loadAdsterra() {
+        if (adLoaded) return;
+        adLoaded = true;
+
+        const s = document.createElement("script");
+        s.src = "https://tuckerclassesjackal.com/6a/04/bc/6a04bc595e968588176ddfcbf5ada03c.js";
+        s.async = true;
+        document.body.appendChild(s);
+    }
+
+    // Trigger hanya dari area video (lebih natural)
+    const triggerArea = document.getElementById("playerArea");
+
+    triggerArea.addEventListener("click", loadAdsterra, { once: true });
+    triggerArea.addEventListener("touchstart", loadAdsterra, { once: true });
+})();
+</script>
+
 </body>
 </html>
