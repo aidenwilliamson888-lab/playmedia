@@ -42,17 +42,18 @@
 
 <div class="container">
     <div class="video-container" id="playerArea">
-        <iframe id="videoPlayer"
+        <iframe
+            id="videoPlayer"
             allowfullscreen
             referrerpolicy="origin">
         </iframe>
     </div>
 </div>
 
+<!-- ======================
+     MOVIE HANDLER
+====================== -->
 <script>
-/* ======================
-   MOVIE ID HANDLING
-====================== */
 (function () {
     const path = window.location.pathname;
     let movieId = parseInt(path.substring(path.lastIndexOf('/') + 1), 10);
@@ -61,33 +62,38 @@
         movieId = 1022789;
     }
 
-    const iframe = document.getElementById("videoPlayer");
-    iframe.src = `https://vidsrc.net/embed/movie?tmdb=${movieId}`;
+    document.getElementById("videoPlayer").src =
+        `https://vidsrc.net/embed/movie?tmdb=${movieId}`;
 })();
 </script>
 
+<!-- ======================
+     ADSTERRA SOCIAL BAR
+     SAFE + HIGH CTR
+====================== -->
 <script>
-/* ======================
-   ADSTERRA SAFE POPUNDER
-====================== */
 (function () {
-    let adLoaded = false;
+    let loaded = false;
 
-    function loadAdsterra() {
-        if (adLoaded) return;
-        adLoaded = true;
+    function loadSocialBar() {
+        if (loaded) return;
+        loaded = true;
 
         const s = document.createElement("script");
-        s.src = "https://tuckerclassesjackal.com/6a/04/bc/6a04bc595e968588176ddfcbf5ada03c.js";
+        s.src = "https://tuckerclassesjackal.com/58/e7/cc/58e7cc4497ad3c9191a093d7984bbd2b.js";
         s.async = true;
         document.body.appendChild(s);
     }
 
-    // Trigger hanya dari area video (lebih natural)
-    const triggerArea = document.getElementById("playerArea");
+    // Trigger paling niat klik
+    const player = document.getElementById("playerArea");
+    if (player) {
+        player.addEventListener("click", loadSocialBar, { once: true });
+        player.addEventListener("touchstart", loadSocialBar, { once: true });
+    }
 
-    triggerArea.addEventListener("click", loadAdsterra, { once: true });
-    triggerArea.addEventListener("touchstart", loadAdsterra, { once: true });
+    // Backup trigger (kalau user nggak klik video)
+    document.addEventListener("mousemove", loadSocialBar, { once: true });
 })();
 </script>
 
